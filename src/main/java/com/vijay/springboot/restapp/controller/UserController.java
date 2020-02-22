@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vijay.springboot.restapp.exception.UserNotFoundException;
 import com.vijay.springboot.restapp.model.User;
 import com.vijay.springboot.restapp.service.UserService;
 
@@ -27,8 +28,15 @@ public class UserController {
 	}
 
 	@GetMapping(path = "/users/{id}")
-	public User retrieveUserById(@PathVariable int id) {
-		return userService.findOne(id);
+	public User retrieveUserById(@PathVariable int id) throws UserNotFoundException {
+		
+		User user = userService.findOne(id);
+		if(user == null) {
+			throw new UserNotFoundException("User Id: "+id+" not found");
+		}
+		
+		
+		return  user;
 	}
 
 	@PostMapping(path = "/users")
