@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,14 +30,13 @@ public class UserController {
 
 	@GetMapping(path = "/users/{id}")
 	public User retrieveUserById(@PathVariable int id) throws UserNotFoundException {
-		
+
 		User user = userService.findOne(id);
-		if(user == null) {
-			throw new UserNotFoundException("User Id: "+id+" not found");
+		if (user == null) {
+			throw new UserNotFoundException("User Id: " + id + " not found");
 		}
-		
-		
-		return  user;
+
+		return user;
 	}
 
 	@PostMapping(path = "/users")
@@ -45,8 +45,18 @@ public class UserController {
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getUserId())
 				.toUri();
-		
+
 		return ResponseEntity.created(uri).build();
+	}
+
+	@DeleteMapping(path = "/users/{id}")
+	public User deleteByUserId(@PathVariable int id) throws UserNotFoundException {
+		User user = userService.deleteById(id);
+
+		if (user == null)
+			throw new UserNotFoundException("User Id: \" + id + \" not found");
+
+		return user;
 	}
 
 }
